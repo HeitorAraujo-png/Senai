@@ -13,7 +13,7 @@ try:
         elif cria == 'paciente':
             os.system('cls')
             make.paciente()
-        elif cria == 'consulta':
+        elif cria == 'exame':
             os.system('cls')
             make.exame()
         else:
@@ -27,4 +27,4 @@ try:
             elif tabelas == 'pacientes':
                 make.pacientes()
 except KeyboardInterrupt:
-    print('Programa parou!')
+    print('\nPrograma parou!')
