@@ -1,5 +1,6 @@
 from sqlalchemy.orm import sessionmaker, create_session , declarative_base
-from sqlalchemy import Column, String, ForeignKey, PrimaryKeyConstraint, Float, Integer, create_engine
+from sqlalchemy import Column, String, ForeignKey, PrimaryKeyConstraint, Float, Integer, create_engine, Date
+from datetime import datetime
 Base = declarative_base()
 engine = create_engine('sqlite:///sql.db')
 Session = sessionmaker(bind=engine)
@@ -30,12 +31,14 @@ class Paciente(Base):
 class Exame(Base):
     __tablename__ = 'exames'
     id_exame = Column(Integer, autoincrement=True, primary_key=True)
+    data = Column(Date, nullable=False)
     id_medico = Column(String, ForeignKey(Medico.id_medico), nullable=False)
     id_paciente = Column(String, ForeignKey(Paciente.id_paciente), nullable=False)
     exame = Column(String, nullable=False)
     valor = Column(Float, nullable=False)
     
-    def __init__(self, id_medico, id_paciente, exame, valor):
+    def __init__(self, data, id_medico, id_paciente, exame, valor):
+        self.data = datetime.strptime(data, '%d/%m/%Y').date()
         self.id_medico = id_medico
         self.id_paciente = id_paciente
         self.exame = exame
