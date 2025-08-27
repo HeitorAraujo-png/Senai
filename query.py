@@ -36,6 +36,11 @@ class Query:
             print('Seu nome é obrigatorio!')
             
     def exame(self):
+        try:
+            data = f'{int(input('Digite o dia do exame: ')):02d}/{int(input('Digite o mes do exame: ')):02d}/{int(input('Digite o ano do exame: ')):02d}'
+        except:
+            print('Data invalida! Tente novamente.')
+            data = f'{int(input('Digite o dia do exame: ')):02d}/{int(input('Digite o mes do exame: ')):02d}/{int(input('Digite o ano do exame: ')):02d}'
         id_m = int(input('Digite o id do medico: '))
         id_p = int(input('Digite o id do paciente: '))
         exame = input('Digite o exame: ').strip().capitalize()
@@ -44,8 +49,8 @@ class Query:
         except:
             valor = float(input('Digite o valor NUMERAL: '))
             
-        if id_m and id_p and exame and valor:
-            query = Exame(id_m, id_p, exame, valor)
+        if id_m and id_p and exame and valor and data:
+            query = Exame(data, id_m, id_p, exame, valor)
             self.commit(query)
         else:
             if not id_m:
@@ -56,13 +61,16 @@ class Query:
                 print('O exame é obrigatorio!')
             if not valor:
                 print('O valor é obrigatorio')
+            if not data:
+                print('A data é obrigatoria!')
                 
     def consultas(self):
         query = session.query(Exame).all()
         table = PrettyTable()
-        table.field_names = ["Nome Paciente", "Telefone Paciente", "Nome Medico", "Especialidade", "Telefone Medico", "Exame", "Valor exame"]
+        table.field_names = ["Data", "Nome Paciente", "Telefone Paciente", "Nome Medico", "Especialidade", "Telefone Medico", "Exame", "Valor exame"]
         for i in query:
             table.add_row([
+                session.query(Exame).where(Exame.id_medico == i.id_medico, Exame.id_paciente == i.id_paciente, Exame.id_exame == i.id_exame).first().data,
                 session.query(Paciente).where(Paciente.id_paciente == i.id_paciente).first().nome_paciente, 
                 session.query(Paciente).where(Paciente.id_paciente == i.id_paciente).first().tel_paciente,
                 session.query(Medico).where(Medico.id_medico == i.id_medico).first().nome_medico,
